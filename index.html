@@ -27,20 +27,24 @@
     </div>
 
     <script>
-        // 通常のメッセージ表示関数
         function showMessage(text) {
             document.getElementById('display-area').innerHTML = `<h2 class="text-primary">${text}</h2>`;
         }
 
-        // 警告を表示する関数
         function showWarning() {
             const area = document.getElementById('display-area');
             area.innerHTML = `
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div id="myAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
                     本当に押していいんですか？
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;
+
+            // アラートが閉じられた瞬間のイベントを監視
+            const alertElement = document.getElementById('myAlert');
+            alertElement.addEventListener('closed.bs.alert', function () {
+                area.innerHTML = `<h2 class="text-success">セーフ！</h2>`;
+            });
         }
     </script>
 
