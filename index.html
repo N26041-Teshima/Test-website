@@ -12,8 +12,8 @@
         <div class="container">
             <a class="navbar-brand" href="#">xx本部</a>
             <div class="navbar-nav">
-                <a class="nav-link" href="#" onclick="showMessage('こんにちは！')">ホーム</a>
-                <a class="nav-link" href="#" onclick="showMessage('趣味はサーフィンと競馬です')">プロフィール</a>
+                <a class="nav-link" href="second.html">ホーム</a>
+                <a class="nav-link" href="profile.html">プロフィール</a>
             </div>
         </div>
     </nav>
@@ -27,10 +27,7 @@
     </div>
 
     <script>
-        function showMessage(text) {
-            document.getElementById('display-area').innerHTML = `<h2 class="text-primary">${text}</h2>`;
-        }
-
+        // 警告を表示する関数
         function showWarning() {
             const area = document.getElementById('display-area');
             area.innerHTML = `
