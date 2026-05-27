@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>オプション - xx本部</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h2>オプション</h2>
+
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="nav-item"><button class="nav-link active" onclick="showTab('あ')">1</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showTab('い')">2</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showTab('う')">3</button></li>
+    </ul>
+    <div id="tabContent" class="p-3 border mb-4">あ</div>
+
+    <div class="mb-4">
+        <input type="text" id="listItem" class="form-control d-inline w-25">
+        <button class="btn btn-success" onclick="addItem()">追加</button>
+        <ul id="listDisplay"></ul>
+    </div>
+
+    <div id="weather" class="alert alert-info">横浜の天気を取得中...</div>
+
+    <table id="myTable" class="table table-striped">
+        <thead><tr><th>名前</th><th>好物</th></tr></thead>
+        <tbody>
+            <tr><td>小池</td><td>ラーメン</td></tr><tr><td>佐藤</td><td>カレー</td></tr>
+            <tr><td>鈴木</td><td>おにぎり</td></tr><tr><td>高橋</td><td>寿司</td></tr>
+        </tbody>
+    </table>
+
+    <canvas id="myChart" class="mt-4"></canvas>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // タブ切替
+        function showTab(t) { document.getElementById('tabContent').innerText = t; }
+
+        // リスト追加
+        function addItem() {
+            const list = document.getElementById('listDisplay');
+            if (list.children.length >= 3) { alert("3つ超えたよ！"); return; }
+            const li = document.createElement('li');
+            li.innerHTML = document.getElementById('listItem').value + ' <button onclick="this.parentElement.remove()">削除</button>';
+            list.appendChild(li);
+        }
+
+        // 天気取得
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.638&current_weather=true')
+            .then(r => r.json()).then(d => document.getElementById('weather').innerText = `横浜の現在の気温: ${d.current_weather.temperature}℃`);
+
+        // テーブル初期化
+        $('#myTable').DataTable();
+
+        // グラフ描画
+        new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: { labels: ['2024年', '2025年', '2026年'], datasets: [
+                { label: 'A社', data: [100, 200, 300], backgroundColor: 'blue' },
+                { label: 'B社', data: [150, 250, 350], backgroundColor: 'red' }
+            ]}
+        });
+    </script>
+</body>
+</html>
