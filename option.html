@@ -7,6 +7,10 @@
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
+    <div class="mb-3">
+        <a href="index.html" class="btn btn-outline-secondary">← トップ画面に戻る</a>
+    </div>
+
     <h2>オプション</h2>
 
     <ul class="nav nav-tabs" id="myTab">
@@ -38,10 +42,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // タブ切替
         function showTab(t) { document.getElementById('tabContent').innerText = t; }
 
-        // リスト追加
         function addItem() {
             const list = document.getElementById('listDisplay');
             if (list.children.length >= 3) { alert("3つ超えたよ！"); return; }
@@ -50,14 +52,11 @@
             list.appendChild(li);
         }
 
-        // 天気取得
         fetch('https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.638&current_weather=true')
             .then(r => r.json()).then(d => document.getElementById('weather').innerText = `横浜の現在の気温: ${d.current_weather.temperature}℃`);
 
-        // テーブル初期化
         $('#myTable').DataTable();
 
-        // グラフ描画
         new Chart(document.getElementById('myChart'), {
             type: 'bar',
             data: { labels: ['2024年', '2025年', '2026年'], datasets: [
