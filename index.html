@@ -5,46 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xx本部</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">xx本部</a>
+            <a class="navbar-brand" href="#" onclick="showPage('home')">xx本部</a>
             <div class="navbar-nav">
-                <a class="nav-link" href="second.html">ホーム</a>
-                <a class="nav-link" href="profile.html">プロフィール</a>
+                <a class="nav-link" href="#" onclick="showPage('home')">ホーム</a>
+                <a class="nav-link" href="#" onclick="showPage('avg')">平均計算</a>
+                <a class="nav-link" href="#" onclick="showPage('opt')">オプション</a>
             </div>
         </div>
     </nav>
 
-    <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 80vh;">
-        <p class="mb-3">これは試作段階のホームページです</p>
-        
-        <button class="btn btn-primary btn-lg" onclick="showWarning()">①</button>
-        
-        <div id="display-area" class="mt-4"></div>
+    <div class="container mt-4" id="content-area">
+        <h2>ホーム</h2>
+        <p>メニューから選択してください。</p>
     </div>
 
-    <script>
-        // 警告を表示する関数
-        function showWarning() {
-            const area = document.getElementById('display-area');
-            area.innerHTML = `
-                <div id="myAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                    本当に押していいんですか？
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-            // アラートが閉じられた瞬間のイベントを監視
-            const alertElement = document.getElementById('myAlert');
-            alertElement.addEventListener('closed.bs.alert', function () {
-                area.innerHTML = `<h2 class="text-success">セーフ！</h2>`;
+    <script>
+        function showPage(page) {
+            const area = document.getElementById('content-area');
+            if (page === 'home') {
+                area.innerHTML = `<h2>ホーム</h2><p>試作段階のホームページです。</p>`;
+            } else if (page === 'avg') {
+                area.innerHTML = `
+                    <h2>平均計算</h2>
+                    <input type="number" id="n1" class="form-control mb-2" placeholder="数字1" pattern="[0-9]*">
+                    <input type="number" id="n2" class="form-control mb-2" placeholder="数字2" pattern="[0-9]*">
+                    <input type="number" id="n3" class="form-control mb-2" placeholder="数字3" pattern="[0-9]*">
+                    <button class="btn btn-primary" onclick="calcAvg()">平均計算</button>
+                    <div id="res" class="mt-3 fs-4"></div>
+                `;
+            } else if (page === 'opt') {
+                area.innerHTML = `
+                    <h2>オプション</h2>
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="nav-item"><a class="nav-link active" onclick="switchTab('あ')">1</a></li>
+                        <li class="nav-item"><a class="nav-link" onclick="switchTab('い')">2</a></li>
+                        <li class="nav-item"><a class="nav-link" onclick="switchTab('う')">3</a></li>
+                    </ul>
+                    <div id="tab-content" class="p-3 border mb-4">あ</div>
+                    
+                    <div class="mb-4">
+                        <input type="text" id="listItem" class="form-control d-inline w-50">
+                        <button class="btn btn-success" onclick="addItem()">追加</button>
+                        <ul id="listDisplay" class="mt-2"></ul>
+                    </div>
+                    
+                    <div id="weather" class="mb-4">横浜の天気: 取得中...</div>
+
+                    <table id="myTable" class="table table-striped">
+                        <thead><tr><th>名前</th><th>好物</th></tr></thead>
+                        <tbody>
+                            <tr><td>小池</td><td>ラーメン</td></tr>
+                            <tr><td>佐藤</td><td>カレー</td></tr>
+                            <tr><td>鈴木</td><td>おにぎり</td></tr>
+                            <tr><td>高橋</td><td>寿司</td></tr>
+                        </tbody>
+                    </table>
+
+                    <canvas id="myChart" class="mt-4"></canvas>
+                `;
+                initOptPage();
+            }
+        }
+
+        // 平均計算ロジック
+        function calcAvg() {
+            const v1 = parseInt(document.getElementById('n1').value) || 0;
+            const v2 = parseInt(document.getElementById('n2').value) || 0;
+            const v3 = parseInt(document.getElementById('n3').value) || 0;
+            const avg = (v1 + v2 + v3) / 3;
+            let msg = "";
+            if (avg <= 50) msg = "まだまだだね";
+            else if (avg <= 80) msg = "やるね";
+            else if (avg <= 90) msg = "すごい！";
+            else msg = "エクセレント！！";
+            document.getElementById('res').innerText = `平均: ${avg.toFixed(1)} (${msg})`;
+        }
+
+        // オプションページ初期化
+        function initOptPage() {
+            $('#myTable').DataTable();
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.638&current_weather=true')
+                .then(res => res.json())
+                .then(data => document.getElementById('weather').innerText = `横浜の現在の気温: ${data.current_weather.temperature}℃`);
+            
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2024年', '2025年', '2026年'],
+                    datasets: [
+                        { label: 'A社', data: [100, 200, 300], backgroundColor: 'blue' },
+                        { label: 'B社', data: [150, 250, 350], backgroundColor: 'red' }
+                    ]
+                }
             });
         }
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        function switchTab(text) { document.getElementById('tab-content').innerText = text; }
+
+        function addItem() {
+            const val = document.getElementById('listItem').value;
+            const list = document.getElementById('listDisplay');
+            if (list.children.length >= 3) { alert("3つ超えたよ！"); return; }
+            const li = document.createElement('li');
+            li.innerHTML = `${val} <button onclick="this.parentElement.remove()">削除</button>`;
+            list.appendChild(li);
+        }
+    </script>
 </body>
 </html>
