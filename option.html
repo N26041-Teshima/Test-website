@@ -42,6 +42,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // ボタンクリックなどで動く関数は外に出したままでOKです
         function showTab(t) { document.getElementById('tabContent').innerText = t; }
 
         function addItem() {
@@ -52,17 +53,24 @@
             list.appendChild(li);
         }
 
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.638&current_weather=true')
-            .then(r => r.json()).then(d => document.getElementById('weather').innerText = `横浜の現在の気温: ${d.current_weather.temperature}℃`);
+        // 画面の読み込み（DOM構築）が完了した後に実行する処理
+        $(function() {
+            // 1. 天気APIの取得と表示
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.638&current_weather=true')
+                .then(r => r.json())
+                .then(d => document.getElementById('weather').innerText = `横浜の現在の気温: ${d.current_weather.temperature}℃`);
 
-        $('#myTable').DataTable();
+            // 2. テーブルのDataTables化
+            $('#myTable').DataTable();
 
-        new Chart(document.getElementById('myChart'), {
-            type: 'bar',
-            data: { labels: ['2024年', '2025年', '2026年'], datasets: [
-                { label: 'A社', data: [100, 200, 300], backgroundColor: 'blue' },
-                { label: 'B社', data: [150, 250, 350], backgroundColor: 'red' }
-            ]}
+            // 3. グラフの描画
+            new Chart(document.getElementById('myChart'), {
+                type: 'bar',
+                data: { labels: ['2024年', '2025年', '2026年'], datasets: [
+                    { label: 'A社', data: [100, 200, 300], backgroundColor: 'blue' },
+                    { label: 'B社', data: [150, 250, 350], backgroundColor: 'red' }
+                ]}
+            });
         });
     </script>
 </body>
