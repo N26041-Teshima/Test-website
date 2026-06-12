@@ -1,21 +1,84 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-458MQZWZME"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'G-458MQZWZME');
-    </script>
+<html lang="ja">
+
+<head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>xx本部</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
+
 <body>
+
+<!-- Cookie同意バナー -->
+<div id="cookie-banner"
+     class="position-fixed bottom-0 start-0 end-0 bg-light border-top shadow p-3"
+     style="display: none; z-index: 1050;">
+    <div class="container">
+        <p class="mb-3">
+            当サイトでは、サービス向上およびアクセス解析のためCookieを利用しています。<br>
+            Google Analyticsを使用し、閲覧情報を収集しています。<br>
+            詳細はプライバシーポリシーをご確認ください。
+        </p>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" onclick="acceptCookies()">同意する</button>
+            <button class="btn btn-outline-secondary" onclick="rejectCookies()">拒否する</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cookie設定
+    function setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+    }
+
+    // Cookie取得
+    function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const c = cookie.trim();
+            if (c.indexOf(name + '=') === 0) {
+                return c.substring(name.length + 1);
+            }
+        }
+        return null;
+    }
+
+    // 同意
+    function acceptCookies() {
+        setCookie('cookieConsent', 'accepted', 365);
+        document.getElementById('cookie-banner').style.display = 'none';
+
+        // Google Analytics初期化処理をここに記述
+        console.log('Cookie同意');
+    }
+
+    // 拒否
+    function rejectCookies() {
+        setCookie('cookieConsent', 'rejected', 365);
+        document.getElementById('cookie-banner').style.display = 'none';
+
+        console.log('Cookie拒否');
+    }
+
+    // 初回アクセス時のみ表示
+    window.addEventListener('load', function () {
+        const consent = getCookie('cookieConsent');
+        if (!consent) {
+            document.getElementById('cookie-banner').style.display = 'block';
+        }
+    });
+</script>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
@@ -29,33 +92,64 @@
     </div>
 </nav>
 
+
+
     <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 80vh;">
+
         <p class="mb-3">これは試作段階のホームページです</p>
+
         
+
         <button class="btn btn-primary btn-lg" onclick="showWarning()">①</button>
+
         
+
         <div id="display-area" class="mt-4"></div>
+
     </div>
 
+
+
     <script>
+
         // 警告を表示する関数
+
         function showWarning() {
+
             const area = document.getElementById('display-area');
+
             area.innerHTML = `
+
                 <div id="myAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+
                     本当に押していいんですか？
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
                 </div>
+
             `;
 
+
+
             // アラートが閉じられた瞬間のイベントを監視
+
             const alertElement = document.getElementById('myAlert');
+
             alertElement.addEventListener('closed.bs.alert', function () {
+
                 area.innerHTML = `<h2 class="text-success">セーフ！</h2>`;
+
             });
+
         }
+
     </script>
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
