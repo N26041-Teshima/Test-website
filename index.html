@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="ja">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>xx本部</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
-
 <body>
 
-<!-- Cookie同意バナー -->
 <div id="cookie-banner"
      class="position-fixed bottom-0 start-0 end-0 bg-light border-top shadow p-3"
      style="display: none; z-index: 1050;">
@@ -35,6 +26,30 @@
 </div>
 
 <script>
+    // 💡 ご自身のGoogle Analytics（GA4）の測定IDに書き換えてください
+    const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+
+    // Google Analyticsを動的に読み込む関数
+    function loadGoogleAnalytics() {
+        if (window.gtag) return; // 既に読み込み済みの場合はスキップ
+
+        // 1. gtags.js のスクリプトタグを生成
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(gaScript);
+
+        // 2. データレイヤーとgtag関数の初期化
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){ dataLayer.push(arguments); };
+        
+        // 3. 計測開始の実行
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID);
+
+        console.log('Google Analytics を動的に読み込みました');
+    }
+
     // Cookie設定
     function setCookie(name, value, days) {
         const date = new Date();
@@ -59,7 +74,8 @@
         setCookie('cookieConsent', 'accepted', 365);
         document.getElementById('cookie-banner').style.display = 'none';
 
-        // Google Analytics初期化処理をここに記述
+        // 同意されたのでGoogle Analyticsを読み込む
+        loadGoogleAnalytics();
         console.log('Cookie同意');
     }
 
@@ -71,11 +87,15 @@
         console.log('Cookie拒否');
     }
 
-    // 初回アクセス時のみ表示
+    // ページ読み込み時の判定
     window.addEventListener('load', function () {
         const consent = getCookie('cookieConsent');
         if (!consent) {
+            // 未回答の場合はバナーを表示（GAは読み込まない）
             document.getElementById('cookie-banner').style.display = 'block';
+        } else if (consent === 'accepted') {
+            // すでに同意済みの場合はバナーを隠したままGAを読み込む
+            loadGoogleAnalytics();
         }
     });
 </script>
@@ -92,64 +112,33 @@
     </div>
 </nav>
 
+<div class="container d-flex flex-column justify-content-center align-items-center" style="height: 80vh;">
+    <p class="mb-3">これは試作段階のホームページです</p>
+    
+    <button class="btn btn-primary btn-lg" onclick="showWarning()">①</button>
+    
+    <div id="display-area" class="mt-4"></div>
+</div>
 
+<script>
+    // 警告を表示する関数
+    function showWarning() {
+        const area = document.getElementById('display-area');
+        area.innerHTML = `
+            <div id="myAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                本当に押していいんですか？
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
 
-    <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 80vh;">
+        // アラートが閉じられた瞬間のイベントを監視
+        const alertElement = document.getElementById('myAlert');
+        alertElement.addEventListener('closed.bs.alert', function () {
+            area.innerHTML = `<h2 class="text-success">セーフ！</h2>`;
+        });
+    }
+</script>
 
-        <p class="mb-3">これは試作段階のホームページです</p>
-
-        
-
-        <button class="btn btn-primary btn-lg" onclick="showWarning()">①</button>
-
-        
-
-        <div id="display-area" class="mt-4"></div>
-
-    </div>
-
-
-
-    <script>
-
-        // 警告を表示する関数
-
-        function showWarning() {
-
-            const area = document.getElementById('display-area');
-
-            area.innerHTML = `
-
-                <div id="myAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
-
-                    本当に押していいんですか？
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-
-                </div>
-
-            `;
-
-
-
-            // アラートが閉じられた瞬間のイベントを監視
-
-            const alertElement = document.getElementById('myAlert');
-
-            alertElement.addEventListener('closed.bs.alert', function () {
-
-                area.innerHTML = `<h2 class="text-success">セーフ！</h2>`;
-
-            });
-
-        }
-
-    </script>
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
